@@ -1,7 +1,9 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star, ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   id: number;
@@ -12,8 +14,14 @@ interface ProductCardProps {
   category: string;
 }
 
-export const ProductCard = ({ name, price, rating, image, category }: ProductCardProps) => {
+export const ProductCard = ({ id, name, price, rating, image, category }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({ id, name, price, image, quantity: 1 });
+    toast.success("Added to cart");
+  };
 
   return (
     <Card
@@ -40,12 +48,16 @@ export const ProductCard = ({ name, price, rating, image, category }: ProductCar
         </div>
       </div>
       <div
-        className={`absolute inset-0 bg-black/60 flex items-center justify-center transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-4 transition-opacity duration-300 ${
           isHovered ? "opacity-100" : "opacity-0"
         }`}
       >
-        <button className="bg-white text-black px-6 py-2 rounded-full font-medium transform transition-transform duration-300 hover:scale-105">
-          Quick View
+        <button 
+          onClick={handleAddToCart}
+          className="bg-white text-black px-6 py-2 rounded-full font-medium transform transition-transform duration-300 hover:scale-105 flex items-center gap-2"
+        >
+          <ShoppingCart className="w-4 h-4" />
+          Add to Cart
         </button>
       </div>
     </Card>
